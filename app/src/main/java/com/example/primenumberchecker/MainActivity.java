@@ -13,7 +13,6 @@ public class MainActivity extends AppCompatActivity {
     private EditText inputField, resultField;
     private Button primecheckbutton;
     private MyAsyncTask mAsyncTask;
-    private boolean isRunning;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,27 +24,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void triggerPrimecheck(View v) {
-        if(!isRunning) {
-            isRunning = true;
+        if(mAsyncTask==null || mAsyncTask.getStatus()== AsyncTask.Status.FINISHED){
             Log.v(TAG, "Thread " + Thread.currentThread().getId() +
                     ": triggerPrimecheck() starts");
             long parameter = Long.parseLong(inputField.getText().toString());
-            primeCheck(parameter);
+            mAsyncTask = new MyAsyncTask();
+            mAsyncTask.execute(parameter);
+            Log.v(TAG, "Thread " + Thread.currentThread().getId() +
+                    ": triggerPrimecheck() ends");
+            Log.d(TAG, "Status: " + mAsyncTask.getStatus());
         }
-        else{
-            isRunning=false;
+        else if(mAsyncTask.getStatus()== AsyncTask.Status.RUNNING){
             Log.v(TAG, "Cancelling primality test" +
                     Thread.currentThread().getId());
             mAsyncTask.cancel(true);
         }
     }
 
-    private void primeCheck(long number)
-    {
-        mAsyncTask = new MyAsyncTask();
-        mAsyncTask.execute(number);
-        Log.v(TAG, "Thread " + Thread.currentThread().getId() +
-                ": triggerPrimecheck() ends");
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //cancel asyntask
+        if(mAsyncTask!=null && mAsyncTask.getStatus() == AsyncTask.Status.RUNNING)
+            mAsyncTask.cancel(true);
     }
 
     private class MyAsyncTask extends AsyncTask<Long, Double, Boolean> {
@@ -78,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
                     ": onPreExecute()");
             resultField.setText("");
             primecheckbutton.setText("cancel");
+            Log.d(TAG, "Status: " + mAsyncTask.getStatus());
         }
 
         @Override
@@ -93,8 +95,7 @@ public class MainActivity extends AppCompatActivity {
                     ": onPostExecute()");
             resultField.setText(isPrime + "");
             primecheckbutton.setText("Is it prime?");
-            isRunning=false;
-
+            Log.d(TAG, "Status: " + mAsyncTask.getStatus());
         }
 
         @Override
@@ -105,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
             super.onCancelled();
             resultField.setText("Primality test cancelled");
             primecheckbutton.setText("Is it prime?");
+            Log.d(TAG, "Status: " + mAsyncTask.getStatus());
         }
 
     }
