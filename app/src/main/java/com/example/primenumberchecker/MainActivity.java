@@ -30,7 +30,10 @@ public class MainActivity extends AppCompatActivity {
             Log.v(TAG, "Thread " + Thread.currentThread().getId() +
                     ": triggerPrimecheck() starts");
             long parameter = Long.parseLong(inputField.getText().toString());
-            primeCheck(parameter);
+            mAsyncTask = new MyAsyncTask();
+            mAsyncTask.execute(parameter);
+            Log.v(TAG, "Thread " + Thread.currentThread().getId() +
+                ": triggerPrimecheck() ends");
         }
         else{
             isRunning=false;
@@ -38,15 +41,7 @@ public class MainActivity extends AppCompatActivity {
                     Thread.currentThread().getId());
             mAsyncTask.cancel(true);
         }
-    }
-
-    private void primeCheck(long number)
-    {
-        mAsyncTask = new MyAsyncTask();
-        mAsyncTask.execute(number);
-        Log.v(TAG, "Thread " + Thread.currentThread().getId() +
-                ": triggerPrimecheck() ends");
-    }
+    }   
 
     private class MyAsyncTask extends AsyncTask<Long, Double, Boolean> {
         @Override
