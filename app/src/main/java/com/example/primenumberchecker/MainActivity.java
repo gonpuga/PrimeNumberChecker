@@ -13,6 +13,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText inputField, resultField;
     private Button primecheckbutton;
     private MyAsyncTask mAsyncTask;
+    private boolean isRunning;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,11 +25,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void triggerPrimecheck(View v) {
-        Log.v(TAG, "Thread " + Thread.currentThread().getId() +
-                ": triggerPrimecheck() starts");
-        long parameter = Long.parseLong(inputField.getText().toString());
+        if(!isRunning) {
+            isRunning = true;
+            Log.v(TAG, "Thread " + Thread.currentThread().getId() +
+                    ": triggerPrimecheck() starts");
+            long parameter = Long.parseLong(inputField.getText().toString());
+            primeCheck(parameter);
+        }
+        else{
+            isRunning=false;
+            Log.v(TAG, "Cancelling primality test" +
+                    Thread.currentThread().getId());
+            mAsyncTask.cancel(true);
+        }
+    }
+
+    private void primeCheck(long number)
+    {
         mAsyncTask = new MyAsyncTask();
-        mAsyncTask.execute(parameter);
+        mAsyncTask.execute(number);
         Log.v(TAG, "Thread " + Thread.currentThread().getId() +
                 ": triggerPrimecheck() ends");
     }
@@ -43,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             double limit = Math.sqrt(numComprobar) + 0.0001;
             double progress = 0;
-            for (long factor = 3; factor < limit; factor += 2) {
+            for (long factor = 3; factor < limit && !isCancelled(); factor += 2) {
                 if (numComprobar % factor == 0)
                     return false;
 
@@ -62,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
             Log.v(TAG, "Thread " + Thread.currentThread().getId() +
                     ": onPreExecute()");
             resultField.setText("");
-            primecheckbutton.setEnabled(false);
+            primecheckbutton.setText("cancel");
         }
 
         @Override
@@ -77,7 +92,20 @@ public class MainActivity extends AppCompatActivity {
             Log.v(TAG, "Thread " + Thread.currentThread().getId() +
                     ": onPostExecute()");
             resultField.setText(isPrime + "");
-            primecheckbutton.setEnabled(true);
+            primecheckbutton.setText("Is it prime?");
+            isRunning=false;
+
         }
+
+        @Override
+        protected void onCancelled()
+        {
+            Log.v(TAG, "Thread " + Thread.currentThread().getId() +
+                    ": onCancelled");
+            super.onCancelled();
+            resultField.setText("Primality test cancelled");
+            primecheckbutton.setText("Is it prime?");
+        }
+
     }
 }
