@@ -1,8 +1,9 @@
 package com.example.primenumberchecker;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,9 +19,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        inputField = (EditText) findViewById(R.id.inputField);
-        resultField = (EditText) findViewById(R.id.resultField);
-        primecheckbutton = (Button) findViewById(R.id.primecheckbutton);
+        inputField = findViewById(R.id.inputField);
+        resultField = findViewById(R.id.resultField);
+        primecheckbutton = findViewById(R.id.primecheckbutton);
     }
 
     public void triggerPrimecheck(View v) {
