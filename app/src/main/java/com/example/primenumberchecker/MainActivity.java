@@ -3,9 +3,7 @@ package com.example.primenumberchecker;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.FragmentTransaction;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
