@@ -1,8 +1,11 @@
 package com.example.primenumberchecker;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.app.FragmentTransaction;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,14 +15,12 @@ public class MainActivity extends AppCompatActivity implements HeadlessFragment.
     private EditText inputField, resultField;
     private Button primecheckbutton;
 
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        inputField = (EditText) findViewById(R.id.inputField);
-        resultField = (EditText) findViewById(R.id.resultField);
-        primecheckbutton = (Button) findViewById(R.id.primecheckbutton);
+        inputField = findViewById(R.id.inputField);
+        resultField = findViewById(R.id.resultField);
+        primecheckbutton = findViewById(R.id.primecheckbutton);
     }
 
     public void triggerPrimecheck(View v) {
@@ -31,7 +32,6 @@ public class MainActivity extends AppCompatActivity implements HeadlessFragment.
         ft.replace(android.R.id.content, fragment, HeadlessFragment.TAG);
         ft.commit();
     }
-
 
     @Override
     public void onPreExecute() {
@@ -55,6 +55,4 @@ public class MainActivity extends AppCompatActivity implements HeadlessFragment.
         resultField.setText("Primality test cancelled");
         primecheckbutton.setText("Is it prime?");
     }
-
-
 }
