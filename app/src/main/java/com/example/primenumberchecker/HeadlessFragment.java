@@ -70,6 +70,8 @@ public class HeadlessFragment extends Fragment {
             Log.v(TAG, "Thread " + Thread.currentThread().getId() +
                     ": doInBackground() starts");
             long numComprobar = n[0];
+            if(numComprobar==2)
+                return true;
             if (numComprobar < 2 || numComprobar % 2 == 0)
                 return false;
             double limit = Math.sqrt(numComprobar) + 0.0001;
