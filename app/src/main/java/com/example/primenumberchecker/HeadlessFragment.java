@@ -12,7 +12,7 @@ import android.util.Log;
 
 public class HeadlessFragment extends Fragment {
 
-    static interface TaskListener {
+    interface TaskListener {
         void onPreExecute();
         void onProgressUpdate(double progress);
         void onPostExecute(boolean result);
@@ -119,6 +119,4 @@ public class HeadlessFragment extends Fragment {
             super.onCancelled();
         }
     }
-
-
 }
